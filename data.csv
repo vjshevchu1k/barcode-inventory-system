@@ -1,4 +1,5 @@
-Produktname,Kategorie,Menge,Preis (€),Barcode
-Router,Netzwerk,15,49.99,ABC12345
-Smartphone,Elektronik,30,599.99,XYZ67890
-SIM-Karte,Kommunikation,100,9.99,SIM2025
+Produktname,Kategorie,Bestand,Preis,Standort
+iPhone 15,Smartphones,50,1299,Berlin
+Samsung S24,Smartphones,35,1199,München
+Sony WH-1000XM5,Kopfhörer,40,399,Hamburg
+Dell XPS 13,Laptops,25,1499,Frankfurt
