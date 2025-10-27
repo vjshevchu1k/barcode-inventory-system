@@ -1,64 +1,51 @@
 import streamlit as st
 import pandas as pd
-import uuid
+import plotly.express as px
 
 # --- Seiteneinstellungen ---
-st.set_page_config(page_title="Barcode Inventory System", layout="wide")
+st.set_page_config(page_title="📦 Barcode & Lagerverwaltungssystem", layout="wide")
 
-# --- Titel ---
-st.title("🏷️ Barcode Inventory System")
-st.markdown("Ein einfaches Lagerverwaltungssystem mit Barcode-Funktion – erstellt von **Vitalii Shevchuk** (2025)")
+# --- Logo und Titel ---
+st.image("https://upload.wikimedia.org/wikipedia/commons/5/55/Deutsche_Telekom_Logo_2013.svg", width=150)
+st.title("📦 Barcode & Lagerverwaltungssystem")
+st.markdown("Ein interaktives System zur Verwaltung von Produkten, Beständen und Standorten im Einzelhandel.")
 
-# --- Daten laden oder erstellen ---
+# --- Daten laden ---
 @st.cache_data
 def load_data():
-    try:
-        df = pd.read_csv("inventory.csv")
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=["Produktname", "Kategorie", "Menge", "Preis (€)", "Barcode"])
-        df.to_csv("inventory.csv", index=False)
-    return df
+    return pd.read_csv("data.csv")
 
 df = load_data()
 
-# --- Seitenlayout ---
-tab1, tab2, tab3 = st.tabs(["📦 Inventar anzeigen", "➕ Neues Produkt", "📇 Barcode suchen"])
+# --- Filterbereich ---
+st.sidebar.header("🔍 Filter")
+category = st.sidebar.selectbox("Kategorie auswählen:", sorted(df["Kategorie"].unique()))
+location = st.sidebar.selectbox("Standort auswählen:", sorted(df["Standort"].unique()))
 
-# --- TAB 1: Inventar anzeigen ---
-with tab1:
-    st.subheader("📋 Aktuelles Inventar")
-    st.dataframe(df, use_container_width=True)
+filtered_df = df[(df["Kategorie"] == category) & (df["Standort"] == location)]
 
-# --- TAB 2: Neues Produkt hinzufügen ---
-with tab2:
-    st.subheader("➕ Neues Produkt hinzufügen")
-    with st.form("add_product_form"):
-        name = st.text_input("Produktname")
-        category = st.text_input("Kategorie")
-        quantity = st.number_input("Menge", min_value=0, step=1)
-        price = st.number_input("Preis (€)", min_value=0.0, step=0.1)
-        barcode = st.text_input("Barcode (optional)", value=str(uuid.uuid4())[:8])
-        submitted = st.form_submit_button("✅ Hinzufügen")
+# --- Barcode-Suche ---
+st.subheader("🔎 Produktsuche")
+barcode_input = st.text_input("Bitte Barcode eingeben:", "")
 
-        if submitted:
-            new_product = {"Produktname": name, "Kategorie": category, "Menge": quantity, "Preis (€)": price, "Barcode": barcode}
-            df = pd.concat([df, pd.DataFrame([new_product])], ignore_index=True)
-            df.to_csv("inventory.csv", index=False)
-            st.success(f"✅ Produkt **{name}** wurde hinzugefügt!")
+if barcode_input:
+    product = df[df["Barcode"].astype(str) == barcode_input]
+    if not product.empty:
+        st.success(f"**Produkt gefunden:** {product.iloc[0]['Produktname']}")
+        st.write(product)
+    else:
+        st.error("❌ Kein Produkt mit diesem Barcode gefunden.")
 
-# --- TAB 3: Barcode-Suche ---
-with tab3:
-    st.subheader("🔍 Produkt über Barcode finden")
-    barcode_search = st.text_input("Barcode eingeben oder scannen")
+# --- Datenanzeige ---
+st.subheader(f"📋 Produktliste ({category} – {location})")
+st.dataframe(filtered_df, use_container_width=True)
 
-    if barcode_search:
-        result = df[df["Barcode"] == barcode_search]
-        if not result.empty:
-            st.success("✅ Produkt gefunden:")
-            st.table(result)
-        else:
-            st.error("❌ Kein Produkt mit diesem Barcode gefunden.")
+# --- Diagramm ---
+st.subheader("📊 Gesamtmenge pro Kategorie")
+fig = px.bar(df.groupby("Kategorie")["Menge"].sum().reset_index(),
+             x="Kategorie", y="Menge", title="Gesamtmenge pro Kategorie")
+st.plotly_chart(fig, use_container_width=True)
 
-# --- Fußzeile ---
+# --- Footer ---
 st.markdown("---")
-st.markdown("© 2025 Barcode Inventory System – Erstellt von Vitalii Shevchuk")
+st.markdown("© 2025 Telekom Lagerverwaltung – Erstellt von **Vitalii Shevchuk**, Münster, Deutschland")
