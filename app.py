@@ -31,7 +31,7 @@ def load_data():
 df = load_data()
 
 # 📊 Фільтри
-standorte = sorted(df["Standort"].unique())
+
 kategorien = sorted(df["Kategorie"].unique())
 
 col1, col2 = st.sidebar.columns(2)
@@ -76,3 +76,4 @@ st.dataframe(filtered_df)
 
 st.markdown("---")
 st.caption("© 2025 Barcode & Lagerverwaltungssystem – erstellt von Vitalii Shevchuk (Münster, Deutschland)")
+
