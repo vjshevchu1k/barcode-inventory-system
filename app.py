@@ -36,7 +36,8 @@ kategorien = sorted(df["Kategorie"].unique())
 
 col1, col2 = st.sidebar.columns(2)
 with col1:
-    selected_standort = st.selectbox("📍 Standort auswählen:", standorte)
+    
+    
 with col2:
     selected_kategorie = st.selectbox("🏷️ Kategorie:", kategorien)
 
@@ -76,4 +77,5 @@ st.dataframe(filtered_df)
 
 st.markdown("---")
 st.caption("© 2025 Barcode & Lagerverwaltungssystem – erstellt von Vitalii Shevchuk (Münster, Deutschland)")
+
 
