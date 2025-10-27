@@ -6,7 +6,9 @@ import plotly.express as px
 st.set_page_config(page_title="📦 Barcode & Lagerverwaltungssystem", layout="wide")
 
 # --- Titel & Logo ---
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Edeka_Logo_2014.svg/512px-Edeka_Logo_2014.svg.png", width=150)
+# логотип (EDEKA) – стабільне відображення з GitHub
+st.image("https://raw.githubusercontent.com/vjshevchu1k/barcode-inventory-system/main/logo.svg", width=120)
+
 
 st.title("📦 Barcode & Lagerverwaltungssystem")
 st.markdown("Ein interaktives System zur Verwaltung von Produkten, Beständen und Standorten im Einzelhandel.")
@@ -112,6 +114,7 @@ else:
 # --- Footer ---
 st.markdown("---")
 st.markdown("© 2025 Barcode & Lagerverwaltungssystem – Erstellt von **Vitalii Shevchuk**")
+
 
 
 
