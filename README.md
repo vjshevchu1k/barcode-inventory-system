@@ -1,23 +1,24 @@
-# 🏷️ Barcode Inventory System
+# 📦 Barcode & Lagerverwaltungssystem
 
-Ein einfaches Lagerverwaltungssystem mit Barcode-Unterstützung.  
-Erstellt von **Vitalii Shevchuk** (2025).
+**Entwickelt von Vitalii Shevchuk**
 
-## 💡 Funktionen
-- Produkte hinzufügen, bearbeiten und löschen  
-- Barcode-Suche und automatische Identifizierung  
-- CSV-Speicherung der Lagerdaten  
-- Benutzerfreundliche Streamlit-Oberfläche  
+Ein interaktives System zur Verwaltung von Produkten, Beständen und Standorten im Einzelhandel (z. B. EDEKA).
 
-## ⚙️ Technologien
-- Python  
+## 🧠 Funktionen
+- Barcode-basierte Produktverwaltung  
+- Analyse von Lagerbeständen und Preisen  
+- Visualisierung nach Standort und Kategorie  
+- Automatische Datenverarbeitung aus CSV-Dateien  
+
+## 🛠️ Technologien
+- Python 3  
 - Streamlit  
+- Plotly  
 - Pandas  
 
-## 🚀 Anwendung
-1. App starten (lokal oder auf Streamlit Cloud)  
-2. Produkte im Tab „➕ Neues Produkt“ hinzufügen  
-3. Barcode eingeben, um Produkte zu suchen  
+## 🌍 Live-Demo
+➡️ [https://barcode-inventory-system.streamlit.app](https://barcode-inventory-system.streamlit.app)
 
-## 📁 Beispiel-Daten
-Die Datei `inventory.csv` enthält Beispieldaten für den Start.
+---
+
+© 2025 – Erstellt von **Vitalii Shevchuk**, Wettringen, Nordrhein-Westfalen, Deutschland 🇩🇪
