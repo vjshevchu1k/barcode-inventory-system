@@ -110,4 +110,5 @@ else:
 
 # --- Footer ---
 st.markdown("---")
-st.markdown("© 2025 Barcode & Lagerverwaltungssystem – Erstellt von **Vitalii Shevchuk**, Münster, Deutschland")
+st.markdown("© 2025 Barcode & Lagerverwaltungssystem – Erstellt von **Vitalii Shevchuk**")
+
