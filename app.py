@@ -1,51 +1,69 @@
-import streamlit as st
 import pandas as pd
+import streamlit as st
 import plotly.express as px
 
-# --- Seiteneinstellungen ---
 st.set_page_config(page_title="📦 Barcode & Lagerverwaltungssystem", layout="wide")
 
-# --- Logo und Titel ---
-st.image("https://upload.wikimedia.org/wikipedia/commons/5/55/Deutsche_Telekom_Logo_2013.svg", width=150)
+# 🏪 Вічний логотип EDEKA (офіційна Wikimedia URL)
+st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/Edeka_Logo.svg", width=120)
+
 st.title("📦 Barcode & Lagerverwaltungssystem")
 st.markdown("Ein interaktives System zur Verwaltung von Produkten, Beständen und Standorten im Einzelhandel.")
+st.markdown("---")
 
-# --- Daten laden ---
+# 🧩 Завантаження даних
 @st.cache_data
 def load_data():
-    return pd.read_csv("data.csv")
+    try:
+        df = pd.read_csv("data.csv")
+    except FileNotFoundError:
+        st.error("❌ Datei 'data.csv' wurde nicht gefunden.")
+        return pd.DataFrame(columns=["Produktname", "Preis", "Bestand", "Standort", "Kategorie"])
+    
+    # Уніфікуємо назви колонок
+    df.columns = [col.strip().capitalize() for col in df.columns]
+
+    # Якщо відсутні ключові колонки — додаємо заглушки
+    if "Standort" not in df.columns:
+        df["Standort"] = "Filiale A"
+    if "Kategorie" not in df.columns:
+        df["Kategorie"] = "Allgemein"
+
+    return df
 
 df = load_data()
 
-# --- Filterbereich ---
-st.sidebar.header("🔍 Filter")
-category = st.sidebar.selectbox("Kategorie auswählen:", sorted(df["Kategorie"].unique()))
-location = st.sidebar.selectbox("Standort auswählen:", sorted(df["Standort"].unique()))
+# 📊 Фільтри
+standorte = sorted(df["Standort"].unique()) if not df.empty else []
+kategorien = sorted(df["Kategorie"].unique()) if not df.empty else []
 
-filtered_df = df[(df["Kategorie"] == category) & (df["Standort"] == location)]
+col1, col2 = st.sidebar.columns(2)
+with col1:
+    selected_standort = st.selectbox("📍 Standort auswählen:", standorte)
+with col2:
+    selected_kategorie = st.selectbox("🏷️ Kategorie:", kategorien)
 
-# --- Barcode-Suche ---
-st.subheader("🔎 Produktsuche")
-barcode_input = st.text_input("Bitte Barcode eingeben:", "")
+filtered_df = df[(df["Standort"] == selected_standort) & (df["Kategorie"] == selected_kategorie)]
 
-if barcode_input:
-    product = df[df["Barcode"].astype(str) == barcode_input]
-    if not product.empty:
-        st.success(f"**Produkt gefunden:** {product.iloc[0]['Produktname']}")
-        st.write(product)
-    else:
-        st.error("❌ Kein Produkt mit diesem Barcode gefunden.")
+# 📈 Візуалізація
+if not filtered_df.empty:
+    col1, col2 = st.columns(2)
 
-# --- Datenanzeige ---
-st.subheader(f"📋 Produktliste ({category} – {location})")
-st.dataframe(filtered_df, use_container_width=True)
+    with col1:
+        fig_stock = px.bar(filtered_df, x="Produktname", y="Bestand", color="Kategorie",
+                           title="📊 Lagerbestand nach Produkt", text_auto=True)
+        st.plotly_chart(fig_stock, use_container_width=True)
 
-# --- Diagramm ---
-st.subheader("📊 Gesamtmenge pro Kategorie")
-fig = px.bar(df.groupby("Kategorie")["Menge"].sum().reset_index(),
-             x="Kategorie", y="Menge", title="Gesamtmenge pro Kategorie")
-st.plotly_chart(fig, use_container_width=True)
+    with col2:
+        fig_price = px.bar(filtered_df, x="Produktname", y="Preis", color="Kategorie",
+                           title="💰 Preisvergleich", text_auto=True)
+        st.plotly_chart(fig_price, use_container_width=True)
+else:
+    st.warning("⚠️ Keine Daten für die gewählten Filter gefunden.")
 
-# --- Footer ---
+# 🧾 Таблиця з даними
+st.subheader("📋 Produktliste")
+st.dataframe(filtered_df)
+
 st.markdown("---")
-st.markdown("© 2025 Telekom Lagerverwaltung – Erstellt von **Vitalii Shevchuk**, Münster, Deutschland")
+st.caption("© 2025 Barcode & Lagerverwaltungssystem – erstellt von Vitalii Shevchuk (Münster, Deutschland)")
